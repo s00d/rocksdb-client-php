@@ -4,3 +4,4 @@
 /node_modules
 /.yarn
 .php-cs-fixer.cache
+db_test
