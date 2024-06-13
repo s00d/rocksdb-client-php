@@ -25,14 +25,14 @@ Below is the diagram illustrating how the client interacts with the RocksDB serv
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant Server
-    participant Database
+    participant PhpClient
+    participant RocksDBServer
+    participant RocksDBDatabase
 
-    Client->>Server: Request (e.g., GET, PUT, DELETE)
-    Server->>Database: Perform operation
-    Database->>Server: Return data/result
-    Server->>Client: Send data/result
+    PhpClient->>RocksDBServer: Request (e.g., GET, PUT, DELETE)
+    RocksDBServer->>RocksDBDatabase: Perform operation
+    RocksDBDatabase->>RocksDBServer: Return data/result
+    RocksDBServer->>PhpClient: Send data/result
 
 ```
 
