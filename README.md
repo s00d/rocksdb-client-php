@@ -134,12 +134,6 @@ If you want to use the client without Laravel, you can directly instantiate the 
 
 This package is a client for the RocksDB server, which is part of the [RocksDBFusion](https://github.com/s00d/RocksDBFusion) project. Before using this client, ensure the RocksDB server is running. You can set up and run the server by following the instructions in the [RocksDBFusion](https://github.com/s00d/RocksDBFusion) repository.
 
-## Workflow
-
-Below is the diagram illustrating how the client interacts with the RocksDB server:
-
-![RocksDB Client PHP Workflow](https://raw.githubusercontent.com/s00d/RocksDBFusion/main/docs/rocksdb-client-php-workflow.png)
-
 ## Methods
 
 ### put
