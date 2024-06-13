@@ -2,7 +2,7 @@
 require 'vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
-use RocksDBClient\RocksDBClient;
+use s00d\RocksDB\RocksDBClient;
 
 class LoadTest extends TestCase
 {

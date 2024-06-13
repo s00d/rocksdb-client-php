@@ -1,10 +1,13 @@
 <?php
 
-namespace YourVendor\RocksDB;
 
+namespace s00d\RocksDB;
+
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
-class RocksDBServiceProvider extends ServiceProvider {
+class RocksDBServiceProvider extends ServiceProvider
+{
     /**
      * Perform post-registration booting of services.
      *
@@ -12,7 +15,6 @@ class RocksDBServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        // Publishes configuration.
         $this->publishes([
             __DIR__.'/../config/rocksdb.php' => config_path('rocksdb.php'),
         ], 'config');

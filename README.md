@@ -1,9 +1,16 @@
-Here is the `README.md` file with installation and usage instructions for your `rocksdb-client-php` package, including examples for both Laravel integration and direct usage.
+[![Packagist Version](https://img.shields.io/packagist/v/s00d/rocksdb-client-php?style=for-the-badge)](https://packagist.org/packages/s00d/rocksdb-client-php)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/s00d/rocksdb-client-php?style=for-the-badge)](https://packagist.org/packages/s00d/rocksdb-client-php)
+[![Packagist License](https://img.shields.io/packagist/l/s00d/rocksdb-client-php?style=for-the-badge)](https://github.com/s00d/rocksdb-client-php/blob/master/LICENSE)
+[![GitHub Repo stars](https://img.shields.io/github/stars/s00d/rocksdb-client-php?style=for-the-badge)](https://github.com/s00d/rocksdb-client-php)
 
-```markdown
+
 # RocksDB Client PHP
 
 A PHP client for interacting with RocksDB server.
+
+## Overview
+
+This package is a part of the [RocksDBFusion](https://github.com/s00d/RocksDBFusion) project. Before integrating this client into your application, you need to run the RocksDB server provided by RocksDBFusion.
 
 ## Installation
 
@@ -106,6 +113,16 @@ If you want to use the client without Laravel, you can directly instantiate the 
    // Other available methods...
    ```
 
+## Server Setup
+
+This package is a client for the RocksDB server, which is part of the [RocksDBFusion](https://github.com/s00d/RocksDBFusion) project. Before using this client, ensure the RocksDB server is running. You can set up and run the server by following the instructions in the [RocksDBFusion](https://github.com/s00d/RocksDBFusion) repository.
+
+## Workflow
+
+Below is the diagram illustrating how the client interacts with the RocksDB server:
+
+![RocksDB Client PHP Workflow](https://raw.githubusercontent.com/s00d/RocksDBFusion/main/docs/rocksdb-client-php-workflow.png)
+
 ## Methods
 
 ### put
@@ -197,3 +214,13 @@ Rolls back a transaction.
 ```php
 RocksDB::rollbackTransaction($txnId);
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/s00d/rocksdb-client-php/blob/master/LICENSE) file for details.
+
+## Links
+
+- [GitHub Repository](https://github.com/s00d/rocksdb-client-php)
+- [Packagist Package](https://packagist.org/packages/s00d/rocksdb-client-php)
+- [RocksDBFusion](https://github.com/s00d/RocksDBFusion)

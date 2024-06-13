@@ -1,6 +1,6 @@
 <?php
 
-namespace RocksDBClient;
+namespace s00d\RocksDB;
 
 use Exception;
 
@@ -19,7 +19,7 @@ class RocksDBClient {
      * @param int $port The port of the RocksDB server.
      * @param string|null $token Optional authentication token for the RocksDB server.
      */
-    public function __construct(string $host, int $port, string $token = null, int $timeout = 60, int retryInterval = 2) {
+    public function __construct(string $host, int $port, string $token = null, int $timeout = 60, int $retryInterval = 2) {
         $this->host = $host;
         $this->port = $port;
         $this->token = $token;
@@ -33,7 +33,6 @@ class RocksDBClient {
      * @throws Exception If unable to connect to the server.
      */
     private function connect() {
-        $retryInterval = 5; // Interval between retries in seconds
         $startTime = time();
 
         while (true) {
@@ -48,7 +47,7 @@ class RocksDBClient {
             }
 
             // Wait for the retry interval before trying again
-            sleep($$this->retryInterval);
+            sleep($this->retryInterval);
         }
     }
 
@@ -68,7 +67,7 @@ class RocksDBClient {
             $request['token'] = $this->token; // Add token to request if present
         }
 
-        $requestJson = json_encode($request) . "\n";
+        $requestJson = json_encode($request, JSON_THROW_ON_ERROR) . "\n";
         fwrite($this->socket, $requestJson);
 
         $responseJson = '';
@@ -79,7 +78,7 @@ class RocksDBClient {
             }
         }
 
-        $response = json_decode($responseJson, true);
+        $response = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
 
         if ($response === null) {
             throw new Exception("Invalid response from server");
@@ -98,9 +97,9 @@ class RocksDBClient {
     private function handleResponse(array $response) {
         if ($response['success']) {
             return $response['result'];
-        } else {
-            throw new Exception($response['error']);
         }
+
+        throw new \RuntimeException($response['error']);
     }
 
     /**

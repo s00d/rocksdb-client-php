@@ -1,6 +1,6 @@
 <?php
 
-namespace YourVendor\RocksDB\Facades;
+namespace s00d\RocksDB\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
