@@ -20,6 +20,22 @@ You can install the package via Composer:
 composer require s00d/rocksdb-client-php
 ```
 
+## Workflow
+Below is the diagram illustrating how the client interacts with the RocksDB server:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Database
+
+    Client->>Server: Request (e.g., GET, PUT, DELETE)
+    Server->>Database: Perform operation
+    Database->>Server: Return data/result
+    Server->>Client: Send data/result
+
+```
+
 ## Configuration
 
 ### Laravel Integration
