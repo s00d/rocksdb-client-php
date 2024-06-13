@@ -3,7 +3,6 @@
 [![Packagist License](https://img.shields.io/packagist/l/s00d/rocksdb-client-php?style=for-the-badge)](https://github.com/s00d/rocksdb-client-php/blob/master/LICENSE)
 [![GitHub Repo stars](https://img.shields.io/github/stars/s00d/rocksdb-client-php?style=for-the-badge)](https://github.com/s00d/rocksdb-client-php)
 
-
 # RocksDB Client PHP
 
 A PHP client for interacting with RocksDB server.
@@ -26,14 +25,16 @@ Below is the diagram illustrating how the client interacts with the RocksDB serv
 ```mermaid
 sequenceDiagram
     participant PhpClient
+    participant TCP
     participant RocksDBServer
     participant RocksDBDatabase
 
-    PhpClient->>RocksDBServer: Request (e.g., GET, PUT, DELETE)
+    PhpClient->>TCP: Open socket (stream_socket_client)
+    TCP->>RocksDBServer: Send request (e.g., GET, PUT, DELETE)
     RocksDBServer->>RocksDBDatabase: Perform operation
     RocksDBDatabase->>RocksDBServer: Return data/result
-    RocksDBServer->>PhpClient: Send data/result
-
+    RocksDBServer->>TCP: Send data/result
+    TCP->>PhpClient: Receive data/result
 ```
 
 ## Configuration
