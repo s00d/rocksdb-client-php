@@ -24,10 +24,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "YourVendor\\RocksDB\\RocksDBServiceProvider"
+        "s00d\\RocksDB\\RocksDBServiceProvider"
       ],
       "aliases": {
-        "RocksDB": "YourVendor\\RocksDB\\Facades\\RocksDB"
+        "RocksDB": "s00d\\RocksDB\\Facades\\RocksDB"
       }
     }
   }
