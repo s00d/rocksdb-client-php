@@ -19,7 +19,7 @@ class RocksDBClient {
      * @param int $port The port of the RocksDB server.
      * @param string|null $token Optional authentication token for the RocksDB server.
      */
-    public function __construct(string $host, int $port, string $token = null, int $timeout = 60, int $retryInterval = 2) {
+    public function __construct(string $host, int $port, string $token = null, int $timeout = 20, int $retryInterval = 2) {
         $this->host = $host;
         $this->port = $port;
         $this->token = $token;
@@ -102,538 +102,758 @@ class RocksDBClient {
         throw new \RuntimeException($response['error']);
     }
 
+    
     /**
-     * Stores a key-value pair in the database.
+     * Inserts a key-value pair into the database.
+     * This function handles the `put` action which inserts a specified key-value pair into the RocksDB database.
+     * The function can optionally operate within a specified column family and transaction if provided.
      *
-     * @param string $key The key to store.
-     * @param string $value The value to store.
-     * @param string|null $cfName Optional column family name.
-     * @param int|null $txnId Optional transaction ID.
+     * @param string $key The key to put
+     * @param string $value The value to put
+     * @param string $cf_name The column family name
+     * @param int $txn_id The transaction ID
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function put(string $key, string $value, string $cfName = null, int $txnId = null) {
-        $value = str_replace(["\r", "\n"], '', $value);
+    public function put(string $key, string $value, string $cf_name = null, int $txn_id = null) {
         $request = [
             'action' => 'put',
-            'key' => $key,
-            'value' => $value,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
 
-        if ($txnId !== null) {
-            $request['txn_id'] = $txnId;
+        $request['key'] = $key;
+        $request['value'] = $value;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
         }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Retrieves the value of a key from the database.
+     * Retrieves the value associated with a key from the database.
+     * This function handles the `get` action which fetches the value associated with a specified key from the RocksDB database.
+     * The function can optionally operate within a specified column family and return a default value if the key is not found.
      *
-     * @param string $key The key to retrieve.
-     * @param string|null $cfName Optional column family name.
-     * @param string|null $default Optional default value if the key is not found.
-     * @param int|null $txnId Optional transaction ID.
-     * @return mixed The value of the key.
+     * @param string $key The key to get
+     * @param string $cf_name The column family name
+     * @param string $default The default value
+     * @param int $txn_id The transaction ID
+     * 
+     * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function get(string $key, string $cfName = null, string $default = null, int $txnId = null) {
+    public function get(string $key, string $cf_name = null, string $default = null, int $txn_id = null) {
         $request = [
             'action' => 'get',
-            'key' => $key,
-            'cf_name' => $cfName,
-            'default' => $default,
+            'options' => [],
         ];
 
-        if ($txnId !== null) {
-            $request['txn_id'] = $txnId;
+        $request['key'] = $key;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($default !== null) {
+            $request['default'] = $default;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
         }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Deletes a key from the database.
+     * Deletes a key-value pair from the database.
+     * This function handles the `delete` action which removes a specified key-value pair from the RocksDB database.
+     * The function can optionally operate within a specified column family and transaction if provided.
      *
-     * @param string $key The key to delete.
-     * @param string|null $cfName Optional column family name.
-     * @param int|null $txnId Optional transaction ID.
+     * @param string $key The key to delete
+     * @param string $cf_name The column family name
+     * @param int $txn_id The transaction ID
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function delete(string $key, string $cfName = null, int $txnId = null) {
+    public function delete(string $key, string $cf_name = null, int $txn_id = null) {
         $request = [
             'action' => 'delete',
-            'key' => $key,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
 
-        if ($txnId !== null) {
-            $request['txn_id'] = $txnId;
+        $request['key'] = $key;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
         }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Merges a value with an existing key.
+     * Merges a value with an existing key in the database.
+     * This function handles the `merge` action which merges a specified value with an existing key in the RocksDB database.
+     * The function can optionally operate within a specified column family and transaction if provided.
      *
-     * @param string $key The key to merge.
-     * @param string $value The value to merge.
-     * @param string|null $cfName Optional column family name.
-     * @param int|null $txnId Optional transaction ID.
+     * @param string $key The key to merge
+     * @param string $value The value to merge
+     * @param string $cf_name The column family name
+     * @param int $txn_id The transaction ID
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function merge(string $key, string $value, string $cfName = null, int $txnId = null) {
+    public function merge(string $key, string $value, string $cf_name = null, int $txn_id = null) {
         $request = [
             'action' => 'merge',
-            'key' => $key,
-            'value' => $value,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
 
-        if ($txnId !== null) {
-            $request['txn_id'] = $txnId;
+        $request['key'] = $key;
+        $request['value'] = $value;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
         }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
+
+
+    /**
+     * Retrieves a property of the database.
+     * This function handles the `get_property` action which fetches a specified property of the RocksDB database.
+     * The function can optionally operate within a specified column family if provided.
+     *
+     * @param string $value The property to get
+     * @param string $cf_name The column family name
+     * 
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function getProperty(string $value, string $cf_name = null) {
+        $request = [
+            'action' => 'get_property',
+            'options' => [],
+        ];
+
+        $request['value'] = $value;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
+
+
+    /**
+     * Retrieves a range of keys from the database.
+     * This function handles the `keys` action which retrieves a range of keys from the RocksDB database.
+     * The function can specify a starting index, limit on the number of keys, and a query string to filter keys.
+     *
+     * @param int $start The start index
+     * @param int $limit The limit of keys to retrieve
+     * @param string $query The query string to filter keys
+     * 
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function keys(int $start, int $limit, string $query = null) {
+        $request = [
+            'action' => 'keys',
+            'options' => [],
+        ];
+
+        $request['options']['start'] = $start;
+        $request['options']['limit'] = $limit;
+
+        if ($query !== null) {
+            $request['options']['query'] = $query;
+        }
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
+
+
+    /**
+     * Retrieves all keys from the database.
+     * This function handles the `all` action which retrieves all keys from the RocksDB database.
+     * The function can specify a query string to filter keys.
+     *
+     * @param string $query The query string to filter keys
+     * 
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function all(string $query = null) {
+        $request = [
+            'action' => 'all',
+            'options' => [],
+        ];
+
+
+        if ($query !== null) {
+            $request['options']['query'] = $query;
+        }
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
+
 
     /**
      * Lists all column families in the database.
+     * This function handles the `list_column_families` action which lists all column families in the RocksDB database.
+     * The function requires the path to the database.
      *
-     * @param string $path The path to the database.
-     * @return mixed The list of column families.
+     * @param string $path The path to the database
+     * 
+     * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function listColumnFamilies(string $path) {
         $request = [
             'action' => 'list_column_families',
-            'value' => $path,
+            'options' => [],
         ];
+
+        $request['path'] = $path;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Creates a new column family.
+     * Creates a new column family in the database.
+     * This function handles the `create_column_family` action which creates a new column family in the RocksDB database.
+     * The function requires the name of the column family to create.
      *
-     * @param string $cfName The name of the new column family.
+     * @param string $cf_name The column family name to create
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function createColumnFamily(string $cfName) {
+    public function createColumnFamily(string $cf_name) {
         $request = [
             'action' => 'create_column_family',
-            'value' => $cfName,
+            'options' => [],
         ];
+
+        $request['cf_name'] = $cf_name;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Drops an existing column family.
+     * Drops an existing column family from the database.
+     * This function handles the `drop_column_family` action which drops an existing column family from the RocksDB database.
+     * The function requires the name of the column family to drop.
      *
-     * @param string $cfName The name of the column family to drop.
+     * @param string $cf_name The column family name to drop
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function dropColumnFamily(string $cfName) {
+    public function dropColumnFamily(string $cf_name) {
         $request = [
             'action' => 'drop_column_family',
-            'value' => $cfName,
+            'options' => [],
         ];
+
+        $request['cf_name'] = $cf_name;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Compacts the database within a range.
+     * Compacts a range of keys in the database.
+     * This function handles the `compact_range` action which compacts a specified range of keys in the RocksDB database.
+     * The function can optionally specify the start key, end key, and column family.
      *
-     * @param string|null $start The start key of the range.
-     * @param string|null $end The end key of the range.
-     * @param string|null $cfName Optional column family name.
+     * @param string $start The start key
+     * @param string $end The end key
+     * @param string $cf_name The column family name
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function compactRange(string $start = null, string $end = null, string $cfName = null) {
+    public function compactRange(string $start = null, string $end = null, string $cf_name = null) {
         $request = [
             'action' => 'compact_range',
-            'key' => $start,
-            'value' => $end,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
+
+
+        if ($start !== null) {
+            $request['options']['start'] = $start;
+        }
+        if ($end !== null) {
+            $request['options']['end'] = $end;
+        }
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Adds a put operation to the write batch.
+     * Adds a key-value pair to the current write batch.
+     * This function handles the `write_batch_put` action which adds a specified key-value pair to the current write batch.
+     * The function can optionally operate within a specified column family.
      *
-     * @param string $key The key to put.
-     * @param string $value The value to put.
-     * @param string|null $cfName Optional column family name.
+     * @param string $key The key to put
+     * @param string $value The value to put
+     * @param string $cf_name The column family name
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function writeBatchPut(string $key, string $value, string $cfName = null) {
+    public function writeBatchPut(string $key, string $value, string $cf_name = null) {
         $request = [
             'action' => 'write_batch_put',
-            'key' => $key,
-            'value' => $value,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
+
+        $request['key'] = $key;
+        $request['value'] = $value;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Adds a merge operation to the write batch.
+     * Merges a value with an existing key in the current write batch.
+     * This function handles the `write_batch_merge` action which merges a specified value with an existing key in the current write batch.
+     * The function can optionally operate within a specified column family.
      *
-     * @param string $key The key to merge.
-     * @param string $value The value to merge.
-     * @param string|null $cfName Optional column family name.
+     * @param string $key The key to merge
+     * @param string $value The value to merge
+     * @param string $cf_name The column family name
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function writeBatchMerge(string $key, string $value, string $cfName = null) {
+    public function writeBatchMerge(string $key, string $value, string $cf_name = null) {
         $request = [
             'action' => 'write_batch_merge',
-            'key' => $key,
-            'value' => $value,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
+
+        $request['key'] = $key;
+        $request['value'] = $value;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Adds a delete operation to the write batch.
+     * Deletes a key from the current write batch.
+     * This function handles the `write_batch_delete` action which deletes a specified key from the current write batch.
+     * The function can optionally operate within a specified column family.
      *
-     * @param string $key The key to delete.
-     * @param string|null $cfName Optional column family name.
+     * @param string $key The key to delete
+     * @param string $cf_name The column family name
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function writeBatchDelete(string $key, string $cfName = null) {
+    public function writeBatchDelete(string $key, string $cf_name = null) {
         $request = [
             'action' => 'write_batch_delete',
-            'key' => $key,
-            'cf_name' => $cfName,
+            'options' => [],
         ];
+
+        $request['key'] = $key;
+
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Executes all operations in the write batch.
+     * Writes the current write batch to the database.
+     * This function handles the `write_batch_write` action which writes the current write batch to the RocksDB database.
      *
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function writeBatchWrite() {
-        $request = ['action' => 'write_batch_write'];
+        $request = [
+            'action' => 'write_batch_write',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Clears all operations in the write batch.
+     * Clears the current write batch.
+     * This function handles the `write_batch_clear` action which clears the current write batch.
      *
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function writeBatchClear() {
-        $request = ['action' => 'write_batch_clear'];
+        $request = [
+            'action' => 'write_batch_clear',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
      * Destroys the current write batch.
+     * This function handles the `write_batch_destroy` action which destroys the current write batch.
      *
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function writeBatchDestroy() {
-        $request = ['action' => 'write_batch_destroy'];
+        $request = [
+            'action' => 'write_batch_destroy',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Creates a new iterator.
+     * Creates a new iterator for the database.
+     * This function handles the `create_iterator` action which creates a new iterator for iterating over the keys in the RocksDB database.
      *
-     * @return mixed The iterator ID.
+     * 
+     * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function createIterator() {
-        $request = ['action' => 'create_iterator'];
+        $request = [
+            'action' => 'create_iterator',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
+
 
     /**
      * Destroys an existing iterator.
+     * This function handles the `destroy_iterator` action which destroys an existing iterator in the RocksDB database.
+     * The function requires the ID of the iterator to destroy.
      *
-     * @param int $iteratorId The ID of the iterator to destroy.
+     * @param int $iterator_id The iterator ID
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function destroyIterator(int $iteratorId) {
+    public function destroyIterator(int $iterator_id) {
         $request = [
             'action' => 'destroy_iterator',
-            'iterator_id' => $iteratorId,
+            'options' => [],
         ];
+
+        $request['options']['iterator_id'] = $iterator_id;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Seeks an iterator to a specific key.
+     * Seeks to a specific key in the iterator.
+     * This function handles the `iterator_seek` action which seeks to a specified key in an existing iterator in the RocksDB database.
+     * The function requires the ID of the iterator, the key to seek, and the direction of the seek (Forward or Reverse).
      *
-     * @param int $iteratorId The ID of the iterator.
-     * @param string $key The key to seek to.
+     * @param int $iterator_id The iterator ID
+     * @param string $key The key to seek
+     * @param string $direction The direction of the seek (Forward or Reverse)
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorSeek(int $iteratorId, string $key) {
+    public function iteratorSeek(int $iterator_id, string $key, string $direction) {
         $request = [
             'action' => 'iterator_seek',
-            'iterator_id' => $iteratorId,
-            'key' => $key,
+            'options' => [],
         ];
+
+        $request['options']['iterator_id'] = $iterator_id;
+        $request['key'] = $key;
+        $request['direction'] = $direction;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Seeks an iterator to a specific key for the previous operation.
+     * Advances the iterator to the next key.
+     * This function handles the `iterator_next` action which advances an existing iterator to the next key in the RocksDB database.
+     * The function requires the ID of the iterator.
      *
-     * @param int $iteratorId The ID of the iterator.
-     * @param string $key The key to seek to.
+     * @param int $iterator_id The iterator ID
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorSeekForPrev(int $iteratorId, string $key) {
-        $request = [
-            'action' => 'iterator_seek_for_prev',
-            'iterator_id' => $iteratorId,
-            'key' => $key,
-        ];
-
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
-
-    /**
-     * Moves an iterator to the next key-value pair.
-     *
-     * @param int $iteratorId The ID of the iterator.
-     * @return mixed The result of the operation.
-     * @throws Exception If the operation fails.
-     */
-    public function iteratorNext(int $iteratorId) {
+    public function iteratorNext(int $iterator_id) {
         $request = [
             'action' => 'iterator_next',
-            'iterator_id' => $iteratorId,
+            'options' => [],
         ];
+
+        $request['options']['iterator_id'] = $iterator_id;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Moves an iterator to the previous key-value pair.
+     * Moves the iterator to the previous key.
+     * This function handles the `iterator_prev` action which moves an existing iterator to the previous key in the RocksDB database.
+     * The function requires the ID of the iterator.
      *
-     * @param int $iteratorId The ID of the iterator.
+     * @param int $iterator_id The iterator ID
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorPrev(int $iteratorId) {
+    public function iteratorPrev(int $iterator_id) {
         $request = [
             'action' => 'iterator_prev',
-            'iterator_id' => $iteratorId,
+            'options' => [],
         ];
 
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
+        $request['options']['iterator_id'] = $iterator_id;
 
-    /**
-     * Retrieves a list of keys from the database.
-     *
-     * @param int $start The starting index of the keys.
-     * @param int $limit The maximum number of keys to retrieve.
-     * @param string|null $query Optional query to filter keys.
-     * @return mixed The list of keys.
-     * @throws Exception If the operation fails.
-     */
-    public function getKeys(int $start = 0, int $limit = 20, string $query = null) {
-        $request = [
-            'action' => 'keys',
-            'options' => [
-                'start' => $start,
-                'limit' => $limit,
-                'query' => $query,
-            ],
-        ];
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
-    /**
-     * Retrieves all keys from the database.
-     *
-     * @param string|null $query Optional query to filter keys.
-     * @return mixed The list of keys.
-     * @throws Exception If the operation fails.
-     */
-    public function getAll(string $query = null) {
-        $request = [
-            'action' => 'all',
-            'options' => [
-                'query' => $query,
-            ],
-        ];
-
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
-
-    /**
-     * Begins a new transaction.
-     *
-     * @return mixed The transaction ID.
-     * @throws Exception If the operation fails.
-     */
-    public function beginTransaction() {
-        $request = ['action' => 'begin_transaction'];
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
-
-    /**
-     * Commits an existing transaction.
-     *
-     * @param int $txnId The ID of the transaction to commit.
-     * @return mixed The result of the operation.
-     * @throws Exception If the operation fails.
-     */
-    public function commitTransaction(int $txnId) {
-        $request = [
-            'action' => 'commit_transaction',
-            'txn_id' => $txnId,
-        ];
-
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
-
-    /**
-     * Rolls back an existing transaction.
-     *
-     * @param int $txnId The ID of the transaction to roll back.
-     * @return mixed The result of the operation.
-     * @throws Exception If the operation fails.
-     */
-    public function rollbackTransaction(int $txnId) {
-        $request = [
-            'action' => 'rollback_transaction',
-            'txn_id' => $txnId,
-        ];
-
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
-
-    /**
-     * Retrieves a property from the database.
-     *
-     * @param string $property The property to retrieve.
-     * @param string|null $cfName Optional column family name.
-     * @return mixed The value of the property.
-     * @throws Exception If the operation fails.
-     */
-    public function getProperty(string $property, string $cfName = null) {
-        $request = [
-            'action' => 'get_property',
-            'value' => $property,
-            'cf_name' => $cfName,
-        ];
-
-        $response = $this->sendRequest($request);
-        return $this->handleResponse($response);
-    }
 
     /**
      * Creates a backup of the database.
+     * This function handles the `backup` action which creates a backup of the RocksDB database.
      *
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function backup() {
-        $request = ['action' => 'backup'];
+        $request = [
+            'action' => 'backup',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
      * Restores the database from the latest backup.
+     * This function handles the `restore_latest` action which restores the RocksDB database from the latest backup.
      *
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function restoreLatest() {
-        $request = ['action' => 'restore_latest'];
+        $request = [
+            'action' => 'restore_latest',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Restores the database from a specific backup.
+     * Restores the database from a specified backup.
+     * This function handles the `restore` action which restores the RocksDB database from a specified backup.
+     * The function requires the ID of the backup to restore.
      *
-     * @param int $backupId The ID of the backup to restore.
+     * @param int $backup_id The ID of the backup to restore
+     * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function restore(int $backupId) {
+    public function restore(int $backup_id) {
         $request = [
             'action' => 'restore',
-            'options' => [
-                'backup_id' => $backupId,
-            ],
+            'options' => [],
         ];
+
+        $request['options']['backup_id'] = $backup_id;
+
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
 
+
     /**
-     * Retrieves information about the backups.
+     * Retrieves information about all backups.
+     * This function handles the `get_backup_info` action which retrieves information about all backups of the RocksDB database.
      *
-     * @return mixed The list of backups.
+     * 
+     * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
     public function getBackupInfo() {
-        $request = ['action' => 'get_backup_info'];
+        $request = [
+            'action' => 'get_backup_info',
+            'options' => [],
+        ];
+
+
+
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
     }
+
+
+    /**
+     * Begins a new transaction.
+     * This function handles the `begin_transaction` action which begins a new transaction in the RocksDB database.
+     *
+     * 
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function beginTransaction() {
+        $request = [
+            'action' => 'begin_transaction',
+            'options' => [],
+        ];
+
+
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
+
+
+    /**
+     * Commits an existing transaction.
+     * This function handles the `commit_transaction` action which commits an existing transaction in the RocksDB database.
+     * The function requires the ID of the transaction to commit.
+     *
+     * @param int $txn_id The transaction ID
+     * 
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function commitTransaction(int $txn_id) {
+        $request = [
+            'action' => 'commit_transaction',
+            'options' => [],
+        ];
+
+        $request['txn_id'] = $txn_id;
+
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
+
+
+    /**
+     * Rolls back an existing transaction.
+     * This function handles the `rollback_transaction` action which rolls back an existing transaction in the RocksDB database.
+     * The function requires the ID of the transaction to roll back.
+     *
+     * @param int $txn_id The transaction ID
+     * 
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function rollbackTransaction(int $txn_id) {
+        $request = [
+            'action' => 'rollback_transaction',
+            'options' => [],
+        ];
+
+        $request['txn_id'] = $txn_id;
+
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
+
 }
