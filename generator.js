@@ -53,7 +53,7 @@ const methodTemplate = `
     public function {{actionCamel}}({{{parametersList}}}) {
         $request = [
             'action' => '{{action}}',
-            {{#if optionalParameters.length}}'options' => [],{{/if}}
+            'options' => [],
         ];
 
         {{#each requiredParameters}}
@@ -65,11 +65,13 @@ const methodTemplate = `
         {{/each}}
 
         {{#each optionalParameters}}
-        {{#if (contains name "options.")}}
-        $request['options']['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
-        {{else}}
-        $request['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
-        {{/if}}
+        if (\${{replace name 'options.' ''}} !== null) {
+            {{#if (contains name "options.")}}
+            $request['options']['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
+            {{else}}
+            $request['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
+            {{/if}}
+        }
         {{/each}}
 
         $response = $this->sendRequest($request);
@@ -179,6 +181,10 @@ class RocksDBClient {
 
         if ($this->token !== null) {
             $request['token'] = $this->token; // Add token to request if present
+        }
+        
+        if(isset($request['options']) && empty($request['options'])) {
+            unset($request['options']);
         }
 
         $requestJson = json_encode($request, JSON_THROW_ON_ERROR) . "\\n";

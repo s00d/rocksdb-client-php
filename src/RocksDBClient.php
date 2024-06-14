@@ -66,6 +66,10 @@ class RocksDBClient {
         if ($this->token !== null) {
             $request['token'] = $this->token; // Add token to request if present
         }
+        
+        if(isset($request['options']) && empty($request['options'])) {
+            unset($request['options']);
+        }
 
         $requestJson = json_encode($request, JSON_THROW_ON_ERROR) . "\n";
         fwrite($this->socket, $requestJson);
@@ -125,8 +129,12 @@ class RocksDBClient {
         $request['key'] = $key;
         $request['value'] = $value;
 
-        $request['cf_name'] = $cf_name;
-        $request['txn_id'] = $txn_id;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -155,8 +163,12 @@ class RocksDBClient {
         $request['key'] = $key;
         $request['default'] = $default;
 
-        $request['cf_name'] = $cf_name;
-        $request['txn_id'] = $txn_id;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -183,8 +195,12 @@ class RocksDBClient {
 
         $request['key'] = $key;
 
-        $request['cf_name'] = $cf_name;
-        $request['txn_id'] = $txn_id;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -213,8 +229,12 @@ class RocksDBClient {
         $request['key'] = $key;
         $request['value'] = $value;
 
-        $request['cf_name'] = $cf_name;
-        $request['txn_id'] = $txn_id;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
+        if ($txn_id !== null) {
+            $request['txn_id'] = $txn_id;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -240,7 +260,9 @@ class RocksDBClient {
 
         $request['value'] = $value;
 
-        $request['cf_name'] = $cf_name;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -268,7 +290,9 @@ class RocksDBClient {
         $request['options']['start'] = $start;
         $request['options']['limit'] = $limit;
 
-        $request['options']['query'] = $query;
+        if ($query !== null) {
+            $request['options']['query'] = $query;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -292,7 +316,9 @@ class RocksDBClient {
         ];
 
 
-        $request['options']['query'] = $query;
+        if ($query !== null) {
+            $request['options']['query'] = $query;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -312,7 +338,7 @@ class RocksDBClient {
     public function listColumnFamilies(string $path) {
         $request = [
             'action' => 'list_column_families',
-            
+            'options' => [],
         ];
 
         $request['path'] = $path;
@@ -336,7 +362,7 @@ class RocksDBClient {
     public function createColumnFamily(string $cf_name) {
         $request = [
             'action' => 'create_column_family',
-            
+            'options' => [],
         ];
 
         $request['cf_name'] = $cf_name;
@@ -360,7 +386,7 @@ class RocksDBClient {
     public function dropColumnFamily(string $cf_name) {
         $request = [
             'action' => 'drop_column_family',
-            
+            'options' => [],
         ];
 
         $request['cf_name'] = $cf_name;
@@ -390,9 +416,15 @@ class RocksDBClient {
         ];
 
 
-        $request['options']['start'] = $start;
-        $request['options']['end'] = $end;
-        $request['cf_name'] = $cf_name;
+        if ($start !== null) {
+            $request['options']['start'] = $start;
+        }
+        if ($end !== null) {
+            $request['options']['end'] = $end;
+        }
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -420,7 +452,9 @@ class RocksDBClient {
         $request['key'] = $key;
         $request['value'] = $value;
 
-        $request['cf_name'] = $cf_name;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -448,7 +482,9 @@ class RocksDBClient {
         $request['key'] = $key;
         $request['value'] = $value;
 
-        $request['cf_name'] = $cf_name;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -474,7 +510,9 @@ class RocksDBClient {
 
         $request['key'] = $key;
 
-        $request['cf_name'] = $cf_name;
+        if ($cf_name !== null) {
+            $request['cf_name'] = $cf_name;
+        }
 
         $response = $this->sendRequest($request);
         return $this->handleResponse($response);
@@ -492,7 +530,7 @@ class RocksDBClient {
     public function writeBatchWrite() {
         $request = [
             'action' => 'write_batch_write',
-            
+            'options' => [],
         ];
 
 
@@ -513,7 +551,7 @@ class RocksDBClient {
     public function writeBatchClear() {
         $request = [
             'action' => 'write_batch_clear',
-            
+            'options' => [],
         ];
 
 
@@ -534,7 +572,7 @@ class RocksDBClient {
     public function writeBatchDestroy() {
         $request = [
             'action' => 'write_batch_destroy',
-            
+            'options' => [],
         ];
 
 
@@ -555,7 +593,7 @@ class RocksDBClient {
     public function createIterator() {
         $request = [
             'action' => 'create_iterator',
-            
+            'options' => [],
         ];
 
 
@@ -578,7 +616,7 @@ class RocksDBClient {
     public function destroyIterator(int $iterator_id) {
         $request = [
             'action' => 'destroy_iterator',
-            
+            'options' => [],
         ];
 
         $request['options']['iterator_id'] = $iterator_id;
@@ -604,7 +642,7 @@ class RocksDBClient {
     public function iteratorSeek(int $iterator_id, string $key, string $direction) {
         $request = [
             'action' => 'iterator_seek',
-            
+            'options' => [],
         ];
 
         $request['options']['iterator_id'] = $iterator_id;
@@ -630,7 +668,7 @@ class RocksDBClient {
     public function iteratorNext(int $iterator_id) {
         $request = [
             'action' => 'iterator_next',
-            
+            'options' => [],
         ];
 
         $request['options']['iterator_id'] = $iterator_id;
@@ -654,7 +692,7 @@ class RocksDBClient {
     public function iteratorPrev(int $iterator_id) {
         $request = [
             'action' => 'iterator_prev',
-            
+            'options' => [],
         ];
 
         $request['options']['iterator_id'] = $iterator_id;
@@ -676,7 +714,7 @@ class RocksDBClient {
     public function backup() {
         $request = [
             'action' => 'backup',
-            
+            'options' => [],
         ];
 
 
@@ -697,7 +735,7 @@ class RocksDBClient {
     public function restoreLatest() {
         $request = [
             'action' => 'restore_latest',
-            
+            'options' => [],
         ];
 
 
@@ -720,7 +758,7 @@ class RocksDBClient {
     public function restore(int $backup_id) {
         $request = [
             'action' => 'restore',
-            
+            'options' => [],
         ];
 
         $request['options']['backup_id'] = $backup_id;
@@ -742,7 +780,7 @@ class RocksDBClient {
     public function getBackupInfo() {
         $request = [
             'action' => 'get_backup_info',
-            
+            'options' => [],
         ];
 
 
@@ -763,7 +801,7 @@ class RocksDBClient {
     public function beginTransaction() {
         $request = [
             'action' => 'begin_transaction',
-            
+            'options' => [],
         ];
 
 
@@ -786,7 +824,7 @@ class RocksDBClient {
     public function commitTransaction(int $txn_id) {
         $request = [
             'action' => 'commit_transaction',
-            
+            'options' => [],
         ];
 
         $request['txn_id'] = $txn_id;
@@ -810,7 +848,7 @@ class RocksDBClient {
     public function rollbackTransaction(int $txn_id) {
         $request = [
             'action' => 'rollback_transaction',
-            
+            'options' => [],
         ];
 
         $request['txn_id'] = $txn_id;
