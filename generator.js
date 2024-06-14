@@ -53,7 +53,7 @@ const methodTemplate = `
     public function {{actionCamel}}({{{parametersList}}}) {
         $request = [
             'action' => '{{action}}',
-            'options' => [],
+            {{#if optionalParameters.length}}'options' => [],{{/if}}
         ];
 
         {{#each requiredParameters}}
@@ -65,13 +65,11 @@ const methodTemplate = `
         {{/each}}
 
         {{#each optionalParameters}}
-        if (\${{replace name 'options.' ''}} !== null) {
-            {{#if (contains name "options.")}}
-            $request['options']['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
-            {{else}}
-            $request['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
-            {{/if}}
-        }
+        {{#if (contains name "options.")}}
+        $request['options']['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
+        {{else}}
+        $request['{{replace name 'options.' ''}}'] = \${{replace name 'options.' ''}};
+        {{/if}}
         {{/each}}
 
         $response = $this->sendRequest($request);
