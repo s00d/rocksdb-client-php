@@ -77,7 +77,7 @@ sequenceDiagram
 
    ```env
    ROCKSDB_HOST=127.0.0.1
-   ROCKSDB_PORT=6379
+   ROCKSDB_PORT=12345
    ROCKSDB_TOKEN=null
    ```
 
@@ -109,10 +109,10 @@ If you want to use the client without Laravel, you can directly instantiate the 
    ```php
    use s00d\RocksDB\RocksDBClient;
 
-   $client = new RocksDBClient('127.0.0.1', 6379);
+   $client = new RocksDBClient('127.0.0.1', 12345);
 
    // If you have a token
-   // $client = new RocksDBClient('127.0.0.1', 6379, 'your-token');
+   // $client = new RocksDBClient('127.0.0.1', 12345, 'your-token');
    ```
 
 2. **Usage**:

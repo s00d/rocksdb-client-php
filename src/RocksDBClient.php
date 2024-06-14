@@ -157,12 +157,10 @@ class RocksDBClient {
         ];
 
         $request['key'] = $key;
+        $request['default'] = $default;
 
         if ($cf_name !== null) {
             $request['cf_name'] = $cf_name;
-        }
-        if ($default !== null) {
-            $request['default'] = $default;
         }
         if ($txn_id !== null) {
             $request['txn_id'] = $txn_id;

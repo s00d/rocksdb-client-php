@@ -103,8 +103,8 @@ const generateMethods = (requests) => {
       actionCamel: _.camelCase(request.action),
       description: convertNewlines(request.description),
       parameters: allParameters,
-      requiredParameters: allParameters.filter(param => param.required),
-      optionalParameters: allParameters.filter(param => !param.required),
+      requiredParameters: allParameters.filter(param => param.required || param.name === 'default'),
+      optionalParameters: allParameters.filter(param => !param.required && param.name !== 'default'),
       parametersList,
     };
 
