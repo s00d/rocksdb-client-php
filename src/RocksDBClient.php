@@ -148,23 +148,25 @@ class RocksDBClient {
      *
      * @param string $key The key to get
      * @param string $cf_name The column family name
-     * @param string $default The default value
+     * @param string $default_value The default value
      * @param int $txn_id The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function get(string $key, string $cf_name = null, string $default = null, int $txn_id = null) {
+    public function get(string $key, string $cf_name = null, string $default_value = null, int $txn_id = null) {
         $request = [
             'action' => 'get',
             'options' => [],
         ];
 
         $request['key'] = $key;
-        $request['default'] = $default;
 
         if ($cf_name !== null) {
             $request['cf_name'] = $cf_name;
+        }
+        if ($default_value !== null) {
+            $request['default_value'] = $default_value;
         }
         if ($txn_id !== null) {
             $request['txn_id'] = $txn_id;
