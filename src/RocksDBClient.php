@@ -332,18 +332,18 @@ class RocksDBClient {
      * This function handles the `list_column_families` action which lists all column families in the RocksDB database.
      * The function requires the path to the database.
      *
-     * @param string $path The path to the database
+     * @param string $value The path to the database
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function listColumnFamilies(string $path) {
+    public function listColumnFamilies(string $value) {
         $request = [
             'action' => 'list_column_families',
             'options' => [],
         ];
 
-        $request['path'] = $path;
+        $request['value'] = $value;
 
 
         $response = $this->sendRequest($request);
@@ -636,12 +636,11 @@ class RocksDBClient {
      *
      * @param int $iterator_id The iterator ID
      * @param string $key The key to seek
-     * @param string $direction The direction of the seek (Forward or Reverse)
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorSeek(int $iterator_id, string $key, string $direction) {
+    public function iteratorSeek(int $iterator_id, string $key) {
         $request = [
             'action' => 'iterator_seek',
             'options' => [],
@@ -649,7 +648,6 @@ class RocksDBClient {
 
         $request['options']['iterator_id'] = $iterator_id;
         $request['key'] = $key;
-        $request['direction'] = $direction;
 
 
         $response = $this->sendRequest($request);
