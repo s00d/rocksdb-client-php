@@ -115,12 +115,12 @@ class RocksDBClient {
      * @param string $key The key to put
      * @param string $value The value to put
      * @param string $cf_name The column family name
-     * @param int $txn_id The transaction ID
+     * @param bool $txn The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function put(string $key, string $value, string $cf_name = null, int $txn_id = null) {
+    public function put(string $key, string $value, string $cf_name = null, bool $txn = null) {
         $request = [
             'action' => 'put',
             'options' => [],
@@ -132,8 +132,8 @@ class RocksDBClient {
         if ($cf_name !== null) {
             $request['cf_name'] = $cf_name;
         }
-        if ($txn_id !== null) {
-            $request['txn_id'] = $txn_id;
+        if ($txn !== null) {
+            $request['txn'] = $txn;
         }
 
         $response = $this->sendRequest($request);
@@ -149,12 +149,12 @@ class RocksDBClient {
      * @param string $key The key to get
      * @param string $cf_name The column family name
      * @param string $default_value The default value
-     * @param int $txn_id The transaction ID
+     * @param bool $txn The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function get(string $key, string $cf_name = null, string $default_value = null, int $txn_id = null) {
+    public function get(string $key, string $cf_name = null, string $default_value = null, bool $txn = null) {
         $request = [
             'action' => 'get',
             'options' => [],
@@ -168,8 +168,8 @@ class RocksDBClient {
         if ($default_value !== null) {
             $request['default_value'] = $default_value;
         }
-        if ($txn_id !== null) {
-            $request['txn_id'] = $txn_id;
+        if ($txn !== null) {
+            $request['txn'] = $txn;
         }
 
         $response = $this->sendRequest($request);
@@ -184,12 +184,12 @@ class RocksDBClient {
      *
      * @param string $key The key to delete
      * @param string $cf_name The column family name
-     * @param int $txn_id The transaction ID
+     * @param bool $txn The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function delete(string $key, string $cf_name = null, int $txn_id = null) {
+    public function delete(string $key, string $cf_name = null, bool $txn = null) {
         $request = [
             'action' => 'delete',
             'options' => [],
@@ -200,8 +200,8 @@ class RocksDBClient {
         if ($cf_name !== null) {
             $request['cf_name'] = $cf_name;
         }
-        if ($txn_id !== null) {
-            $request['txn_id'] = $txn_id;
+        if ($txn !== null) {
+            $request['txn'] = $txn;
         }
 
         $response = $this->sendRequest($request);
@@ -217,12 +217,12 @@ class RocksDBClient {
      * @param string $key The key to merge
      * @param string $value The value to merge
      * @param string $cf_name The column family name
-     * @param int $txn_id The transaction ID
+     * @param bool $txn The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function merge(string $key, string $value, string $cf_name = null, int $txn_id = null) {
+    public function merge(string $key, string $value, string $cf_name = null, bool $txn = null) {
         $request = [
             'action' => 'merge',
             'options' => [],
@@ -234,8 +234,8 @@ class RocksDBClient {
         if ($cf_name !== null) {
             $request['cf_name'] = $cf_name;
         }
-        if ($txn_id !== null) {
-            $request['txn_id'] = $txn_id;
+        if ($txn !== null) {
+            $request['txn'] = $txn;
         }
 
         $response = $this->sendRequest($request);
@@ -276,14 +276,14 @@ class RocksDBClient {
      * This function handles the `keys` action which retrieves a range of keys from the RocksDB database.
      * The function can specify a starting index, limit on the number of keys, and a query string to filter keys.
      *
-     * @param int $start The start index
-     * @param int $limit The limit of keys to retrieve
+     * @param string $start The start index
+     * @param string $limit The limit of keys to retrieve
      * @param string $query The query string to filter keys
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function keys(int $start, int $limit, string $query = null) {
+    public function keys(string $start, string $limit, string $query = null) {
         $request = [
             'action' => 'keys',
             'options' => [],
@@ -332,18 +332,16 @@ class RocksDBClient {
      * This function handles the `list_column_families` action which lists all column families in the RocksDB database.
      * The function requires the path to the database.
      *
-     * @param string $value The path to the database
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function listColumnFamilies(string $value) {
+    public function listColumnFamilies() {
         $request = [
             'action' => 'list_column_families',
             'options' => [],
         ];
 
-        $request['value'] = $value;
 
 
         $response = $this->sendRequest($request);
@@ -610,12 +608,12 @@ class RocksDBClient {
      * This function handles the `destroy_iterator` action which destroys an existing iterator in the RocksDB database.
      * The function requires the ID of the iterator to destroy.
      *
-     * @param int $iterator_id The iterator ID
+     * @param string $iterator_id The iterator ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function destroyIterator(int $iterator_id) {
+    public function destroyIterator(string $iterator_id) {
         $request = [
             'action' => 'destroy_iterator',
             'options' => [],
@@ -634,13 +632,13 @@ class RocksDBClient {
      * This function handles the `iterator_seek` action which seeks to a specified key in an existing iterator in the RocksDB database.
      * The function requires the ID of the iterator, the key to seek, and the direction of the seek (Forward or Reverse).
      *
-     * @param int $iterator_id The iterator ID
+     * @param string $iterator_id The iterator ID
      * @param string $key The key to seek
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorSeek(int $iterator_id, string $key) {
+    public function iteratorSeek(string $iterator_id, string $key) {
         $request = [
             'action' => 'iterator_seek',
             'options' => [],
@@ -660,12 +658,12 @@ class RocksDBClient {
      * This function handles the `iterator_next` action which advances an existing iterator to the next key in the RocksDB database.
      * The function requires the ID of the iterator.
      *
-     * @param int $iterator_id The iterator ID
+     * @param string $iterator_id The iterator ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorNext(int $iterator_id) {
+    public function iteratorNext(string $iterator_id) {
         $request = [
             'action' => 'iterator_next',
             'options' => [],
@@ -684,12 +682,12 @@ class RocksDBClient {
      * This function handles the `iterator_prev` action which moves an existing iterator to the previous key in the RocksDB database.
      * The function requires the ID of the iterator.
      *
-     * @param int $iterator_id The iterator ID
+     * @param string $iterator_id The iterator ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function iteratorPrev(int $iterator_id) {
+    public function iteratorPrev(string $iterator_id) {
         $request = [
             'action' => 'iterator_prev',
             'options' => [],
@@ -750,12 +748,12 @@ class RocksDBClient {
      * This function handles the `restore` action which restores the RocksDB database from a specified backup.
      * The function requires the ID of the backup to restore.
      *
-     * @param int $backup_id The ID of the backup to restore
+     * @param string $backup_id The ID of the backup to restore
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function restore(int $backup_id) {
+    public function restore(string $backup_id) {
         $request = [
             'action' => 'restore',
             'options' => [],
@@ -816,18 +814,16 @@ class RocksDBClient {
      * This function handles the `commit_transaction` action which commits an existing transaction in the RocksDB database.
      * The function requires the ID of the transaction to commit.
      *
-     * @param int $txn_id The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function commitTransaction(int $txn_id) {
+    public function commitTransaction() {
         $request = [
             'action' => 'commit_transaction',
             'options' => [],
         ];
 
-        $request['txn_id'] = $txn_id;
 
 
         $response = $this->sendRequest($request);
@@ -840,18 +836,16 @@ class RocksDBClient {
      * This function handles the `rollback_transaction` action which rolls back an existing transaction in the RocksDB database.
      * The function requires the ID of the transaction to roll back.
      *
-     * @param int $txn_id The transaction ID
      * 
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
-    public function rollbackTransaction(int $txn_id) {
+    public function rollbackTransaction() {
         $request = [
             'action' => 'rollback_transaction',
             'options' => [],
         ];
 
-        $request['txn_id'] = $txn_id;
 
 
         $response = $this->sendRequest($request);

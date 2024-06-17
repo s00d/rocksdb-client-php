@@ -19,8 +19,8 @@
           "required": false,
           "description": "The column family name"
         },
-        "txn_id": {
-          "param_type": "usize",
+        "txn": {
+          "param_type": "bool",
           "required": false,
           "description": "The transaction ID"
         }
@@ -62,8 +62,8 @@
           "required": false,
           "description": "The default value"
         },
-        "txn_id": {
-          "param_type": "usize",
+        "txn": {
+          "param_type": "bool",
           "required": false,
           "description": "The transaction ID"
         }
@@ -100,8 +100,8 @@
           "required": false,
           "description": "The column family name"
         },
-        "txn_id": {
-          "param_type": "usize",
+        "txn": {
+          "param_type": "bool",
           "required": false,
           "description": "The transaction ID"
         }
@@ -143,8 +143,8 @@
           "required": false,
           "description": "The column family name"
         },
-        "txn_id": {
-          "param_type": "usize",
+        "txn": {
+          "param_type": "bool",
           "required": false,
           "description": "The transaction ID"
         }
@@ -207,14 +207,15 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "start": {
-              "param_type": "usize",
+              "param_type": "String",
               "required": true,
               "description": "The start index"
             },
             "limit": {
-              "param_type": "usize",
+              "param_type": "String",
               "required": true,
               "description": "The limit of keys to retrieve"
             },
@@ -251,6 +252,7 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "query": {
               "param_type": "String",
@@ -281,13 +283,7 @@
     {
       "action": "list_column_families",
       "description": "Lists all column families in the database.\\nThis function handles the `list_column_families` action which lists all column families in the RocksDB database.\\nThe function requires the path to the database.",
-      "parameters": {
-        "value": {
-          "param_type": "String",
-          "required": true,
-          "description": "The path to the database"
-        }
-      },
+      "parameters": {},
       "response": {
         "success": {
           "param_type": "bool",
@@ -369,6 +365,7 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "start": {
               "param_type": "String",
@@ -610,9 +607,10 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "iterator_id": {
-              "param_type": "usize",
+              "param_type": "String",
               "required": true,
               "description": "The iterator ID"
             }
@@ -644,9 +642,10 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "iterator_id": {
-              "param_type": "usize",
+              "param_type": "String",
               "required": true,
               "description": "The iterator ID"
             }
@@ -683,9 +682,10 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "iterator_id": {
-              "param_type": "usize",
+              "param_type": "String",
               "required": true,
               "description": "The iterator ID"
             }
@@ -717,9 +717,10 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "iterator_id": {
-              "param_type": "usize",
+              "param_type": "String",
               "required": true,
               "description": "The iterator ID"
             }
@@ -795,9 +796,10 @@
         "options": {
           "param_type": "object",
           "required": false,
+          "description": "",
           "properties": {
             "backup_id": {
-              "param_type": "u32",
+              "param_type": "String",
               "required": true,
               "description": "The ID of the backup to restore"
             }
@@ -869,13 +871,7 @@
     {
       "action": "commit_transaction",
       "description": "Commits an existing transaction.\\nThis function handles the `commit_transaction` action which commits an existing transaction in the RocksDB database.\\nThe function requires the ID of the transaction to commit.",
-      "parameters": {
-        "txn_id": {
-          "param_type": "usize",
-          "required": true,
-          "description": "The transaction ID"
-        }
-      },
+      "parameters": {},
       "response": {
         "success": {
           "param_type": "bool",
@@ -897,13 +893,7 @@
     {
       "action": "rollback_transaction",
       "description": "Rolls back an existing transaction.\\nThis function handles the `rollback_transaction` action which rolls back an existing transaction in the RocksDB database.\\nThe function requires the ID of the transaction to roll back.",
-      "parameters": {
-        "txn_id": {
-          "param_type": "usize",
-          "required": true,
-          "description": "The transaction ID"
-        }
-      },
+      "parameters": {},
       "response": {
         "success": {
           "param_type": "bool",
