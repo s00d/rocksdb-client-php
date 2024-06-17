@@ -1,0 +1,35 @@
+    /**
+     * {{description}}
+     *
+     * {{#each parameters}}@param {{param_type}} ${{replace name 'options.' ''}} {{description}}
+     * {{/each}}
+     * @return mixed The result of the operation.
+     * @throws Exception If the operation fails.
+     */
+    public function {{actionCamel}}({{{parametersList}}}) {
+        $request = [
+            'action' => '{{action}}',
+            'options' => [],
+        ];
+
+        {{#each requiredParameters}}
+        {{#if (contains name "options.")}}
+        $request['options']['{{replace name 'options.' ''}}'] = ${{replace name 'options.' ''}};
+        {{else}}
+        $request['{{replace name 'options.' ''}}'] = ${{replace name 'options.' ''}};
+        {{/if}}
+        {{/each}}
+
+        {{#each optionalParameters}}
+        if (${{replace name 'options.' ''}} !== null) {
+            {{#if (contains name "options.")}}
+            $request['options']['{{replace name 'options.' ''}}'] = ${{replace name 'options.' ''}};
+            {{else}}
+            $request['{{replace name 'options.' ''}}'] = ${{replace name 'options.' ''}};
+            {{/if}}
+        }
+        {{/each}}
+
+        $response = $this->sendRequest($request);
+        return $this->handleResponse($response);
+    }
