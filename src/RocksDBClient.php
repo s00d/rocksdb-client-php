@@ -103,7 +103,7 @@ class RocksDBClient {
             return $response['result'];
         }
 
-        throw new \RuntimeException($response['error']);
+        throw new \RuntimeException($response['result']);
     }
 
     /**
@@ -115,7 +115,7 @@ class RocksDBClient {
      * @param string $value The value to put
      * @param string $cf_name The column family name
      * @param bool $txn The transaction ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -148,7 +148,7 @@ class RocksDBClient {
      * @param string $cf_name The column family name
      * @param string $default_value The default value
      * @param bool $txn The transaction ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -182,7 +182,7 @@ class RocksDBClient {
      * @param string $key The key to delete
      * @param string $cf_name The column family name
      * @param bool $txn The transaction ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -214,7 +214,7 @@ class RocksDBClient {
      * @param string $value The value to merge
      * @param string $cf_name The column family name
      * @param bool $txn The transaction ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -245,7 +245,7 @@ class RocksDBClient {
      *
      * @param string $value The property to get
      * @param string $cf_name The column family name
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -273,7 +273,7 @@ class RocksDBClient {
      * @param string $start The start index
      * @param string $limit The limit of keys to retrieve
      * @param string $query The query string to filter keys
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -300,7 +300,7 @@ class RocksDBClient {
      * The function can specify a query string to filter keys.
      *
      * @param string $query The query string to filter keys
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -324,7 +324,7 @@ class RocksDBClient {
      * This function handles the `list_column_families` action which lists all column families in the RocksDB database.
      * The function requires the path to the database.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -346,7 +346,7 @@ class RocksDBClient {
      * The function requires the name of the column family to create.
      *
      * @param string $cf_name The column family name to create
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -369,7 +369,7 @@ class RocksDBClient {
      * The function requires the name of the column family to drop.
      *
      * @param string $cf_name The column family name to drop
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -394,7 +394,7 @@ class RocksDBClient {
      * @param string $start The start key
      * @param string $end The end key
      * @param string $cf_name The column family name
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -427,7 +427,7 @@ class RocksDBClient {
      * @param string $key The key to put
      * @param string $value The value to put
      * @param string $cf_name The column family name
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -456,7 +456,7 @@ class RocksDBClient {
      * @param string $key The key to merge
      * @param string $value The value to merge
      * @param string $cf_name The column family name
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -484,7 +484,7 @@ class RocksDBClient {
      *
      * @param string $key The key to delete
      * @param string $cf_name The column family name
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -508,7 +508,7 @@ class RocksDBClient {
      * Writes the current write batch to the database.
      * This function handles the `write_batch_write` action which writes the current write batch to the RocksDB database.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -528,7 +528,7 @@ class RocksDBClient {
      * Clears the current write batch.
      * This function handles the `write_batch_clear` action which clears the current write batch.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -548,7 +548,7 @@ class RocksDBClient {
      * Destroys the current write batch.
      * This function handles the `write_batch_destroy` action which destroys the current write batch.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -568,7 +568,7 @@ class RocksDBClient {
      * Creates a new iterator for the database.
      * This function handles the `create_iterator` action which creates a new iterator for iterating over the keys in the RocksDB database.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -590,7 +590,7 @@ class RocksDBClient {
      * The function requires the ID of the iterator to destroy.
      *
      * @param string $iterator_id The iterator ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -614,7 +614,7 @@ class RocksDBClient {
      *
      * @param string $iterator_id The iterator ID
      * @param string $key The key to seek
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -638,7 +638,7 @@ class RocksDBClient {
      * The function requires the ID of the iterator.
      *
      * @param string $iterator_id The iterator ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -661,7 +661,7 @@ class RocksDBClient {
      * The function requires the ID of the iterator.
      *
      * @param string $iterator_id The iterator ID
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -682,7 +682,7 @@ class RocksDBClient {
      * Creates a backup of the database.
      * This function handles the `backup` action which creates a backup of the RocksDB database.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -702,7 +702,7 @@ class RocksDBClient {
      * Restores the database from the latest backup.
      * This function handles the `restore_latest` action which restores the RocksDB database from the latest backup.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -724,7 +724,7 @@ class RocksDBClient {
      * The function requires the ID of the backup to restore.
      *
      * @param string $backup_id The ID of the backup to restore
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -745,7 +745,7 @@ class RocksDBClient {
      * Retrieves information about all backups.
      * This function handles the `get_backup_info` action which retrieves information about all backups of the RocksDB database.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -765,7 +765,7 @@ class RocksDBClient {
      * Begins a new transaction.
      * This function handles the `begin_transaction` action which begins a new transaction in the RocksDB database.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -786,7 +786,7 @@ class RocksDBClient {
      * This function handles the `commit_transaction` action which commits an existing transaction in the RocksDB database.
      * The function requires the ID of the transaction to commit.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
@@ -807,7 +807,7 @@ class RocksDBClient {
      * This function handles the `rollback_transaction` action which rolls back an existing transaction in the RocksDB database.
      * The function requires the ID of the transaction to roll back.
      *
-     * 
+     *
      * @return mixed The result of the operation.
      * @throws Exception If the operation fails.
      */
