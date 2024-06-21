@@ -103,7 +103,7 @@ class RocksDBClient {
             return $response['result'];
         }
 
-        throw new \RuntimeException($response['error']);
+        throw new \RuntimeException($response['result']);
     }
 
 {{{methods}}}
